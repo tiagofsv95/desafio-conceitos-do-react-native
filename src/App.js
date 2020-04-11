@@ -22,14 +22,18 @@ export default function App() {
   }, []);
   
   async function handleLikeRepository(id) {
-    const newRepositories = repositories.filter( repository => repository.id !== id );
     
+    const repositoriesIndex = repositories.findIndex( repository => repository.id === id );
+
+    const repository = [...repositories];
+
     const response = await api.post(`/repositories/${id}/like`);
 
-    const repository = [...newRepositories, response.data];
+    repository[repositoriesIndex] = response.data;
 
     setRepositories(repository);
-  }
+
+  };
 
   return (
     <>
@@ -43,16 +47,16 @@ export default function App() {
             <>
               <Text style={styles.repository}>{repository.title}</Text>
               
-              <Text style={styles.tech}>{repository.techs}</Text>
+              {/*<Text style={styles.tech}>{repository.techs}</Text>*/}
               
-              {/*<FlatList 
+              <FlatList 
                 style={styles.techsContainer}
                 data={data = repository.techs.split(",")}
                 keyExtractor={data => data}
                 renderItem={({ item: tech }) => (
                     <Text style={styles.tech}>{tech}</Text>
                 )}
-              />*/}
+              />
 
               <View style={styles.likesContainer}>
                 { repository.likes <= 1 ?
